@@ -239,8 +239,8 @@ const MENU=[
     {name:'咖啡O（冰）', price:2.20},
     {name:'奶茶（热）', price:2.30},
     {name:'奶茶（冰）', price:2.50},
-    {name:'奶茶C（热）', price:2.60},  // 改价
-    {name:'奶茶C（冰）', price:2.80},  // 改价
+    {name:'奶茶C（热）', price:2.60},
+    {name:'奶茶C（冰）', price:2.80},
     {name:'奶茶咸C（热）', price:2.60},
     {name:'奶茶咸C（冰）', price:2.80},
     {name:'奶茶O（热）', price:2.00},
@@ -253,25 +253,24 @@ const MENU=[
     {name:'Milo C（冰）', price:3.00},
     {name:'Milo O（热）', price:2.60},
     {name:'Milo O（冰）', price:2.80},
-    {name:'Neslo（热）', price:2.80},     // 新增
-    {name:'Neslo（冰）', price:3.00},     // 新增
-    {name:'鸳鸯（热）', price:2.80},       // 新增
-    {name:'鸳鸯（冰）', price:3.00},       // 新增
-    {name:'Nestle（热）', price:2.80},     // 新增
-    {name:'钓鱼 “茶包”', price:1.00},     // 新增\
+    {name:'Neslo（热）', price:2.80},
+    {name:'Neslo（冰）', price:3.00},
+    {name:'鸳鸯（热）', price:2.80},
+    {name:'鸳鸯（冰）', price:3.00},
+    {name:'Nestle（热）', price:2.80},
+    {name:'钓鱼 “茶包”', price:1.00},
     {name:'凉茶（热）', price:1.50},
     {name:'凉茶（冰）', price:1.70},
     {name:'玉米（热）', price:1.50},
     {name:'玉米（冰）', price:1.70},
-    
     {name:'罐装水', price:2.50},
   ]}]},
   { key:'cat_roti', sections:[{title:'', items:[
     {name:'Roti', price:2.00},
     {name:'Roti Butter', price:2.50},
-    {name:'生熟蛋 “Set”', price:2.40}    // 新增
+    {name:'生熟蛋 “Set”', price:2.40}
   ]}]},
-  { key:'cat_juice', sections:[{title:'', items:[          // 新分类：果汁（统一 RM5）
+  { key:'cat_juice', sections:[{title:'', items:[
     {name:'苹果汁', price:5.00},
     {name:'橙汁', price:5.00},
     {name:'萝卜汁', price:5.00},
@@ -308,19 +307,17 @@ const MENU=[
   ]}]},
 ];
 
-
 /* ===== 构建菜单（饮料合并冷热；果汁“加奶”） ===== */
 const catsEl=document.getElementById('cats');
 const NAME_TO_CAT=new Map();
 
-
 /* ===== helper: group drinks into base with hot/ice ===== */
 function groupDrinks(items){
-  const groups = {}; // base -> {hot:{price}, ice:{price}}
+  const groups = {};
   items.forEach(it=>{
     let m = it.name.match(/^(.*)（(热|冰)）$/);
     if(!m){ return; }
-    const base=m[1]; const kind=m[2]; // 热 or 冰
+    const base=m[1]; const kind=m[2];
     groups[base] = groups[base] || {hot:null, ice:null};
     if(kind==='热'){ groups[base].hot = {price:it.price}; }
     if(kind==='冰'){ groups[base].ice = {price:it.price}; }
@@ -333,11 +330,9 @@ MENU.forEach((cat)=>{
   wrap.innerHTML=`<div class="cat-h" data-toggle><h3>${t(cat.key)}</h3><div style="opacity:.8">${t('expand')}</div></div><div class="cat-b"><div class="grid"></div></div>`;
   const grid=wrap.querySelector('.grid');
 
-  // Special rendering for drinks: compress hot/ice into one card with two checkboxes
   if(cat.key==='cat_drinks'){
     const all = cat.sections.flatMap(s=>s.items);
     const groups = groupDrinks(all);
-    // Render only grouped bases first
     Object.keys(groups).forEach(base=>{
       const hot = groups[base].hot, ice = groups[base].ice;
       const hotId = `${base}（热）__${hot?hot.price:''}`;
@@ -370,7 +365,6 @@ MENU.forEach((cat)=>{
         </div>
       `);
     });
-    // Render remaining non-hot/ice drinks (e.g., 罐装水、钓鱼“茶包”)
     all.forEach(it=>{
       if(/（热）|（冰）/.test(it.name)) return;
       NAME_TO_CAT.set(it.name,'cat_drinks');
@@ -387,7 +381,6 @@ MENU.forEach((cat)=>{
         </div>`);
     });
   } else {
-    // Default rendering for other categories
     cat.sections.forEach(sec=>{
       sec.items.forEach(it=>{
         NAME_TO_CAT.set(it.name,cat.key);
@@ -425,7 +418,6 @@ function ensureNoteMilk(itemName){
   const tag = `${itemName} 加奶`;
   if(!note.value.includes(tag)){
     note.value = (note.value? note.value + ' · ' : '') + tag;
-    showToast('已添加备注：加奶');
   }
 }
 function addToCart(name,price,delta=1,isMilk=false){
@@ -482,7 +474,8 @@ function exportCSV(){
   let total=0; CART.forEach(it=>{const amt=it.qty*it.price; total+=amt; rows.push([it.name,it.qty,it.price,amt]);});
   rows.push(["Total","","",total.toFixed(2)]);
   const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const a=document.createElement('a');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download='order.csv'; a.click();
 }
 
@@ -603,17 +596,30 @@ function renderStatsAndBuildWA(dateStr, stat){
   return wa;
 }
 
-/* ===== WhatsApp 发送（同窗口跳转，避免被拦截） ===== */
-function openWA(text){
-  // 双保险：优先 api.whatsapp.com，同窗口跳转；若 1.2s 内没跳走，则回退 wa.me
-  const api = 'https://api.whatsapp.com/send?text='+encodeURIComponent(text);
-  const wa  = 'https://wa.me/?text='+encodeURIComponent(text);
-  try { location.href = api; } catch(e) {}
-  setTimeout(()=>{
-    if(!document.hidden){
-      try { location.href = wa; } catch(e) {}
+/* ===== WhatsApp 发送（优化兼容性） ===== */
+function openWA(text) {
+  const encodedText = encodeURIComponent(text);
+  const whatsappScheme = `whatsapp://send?text=${encodedText}`;
+  const apiUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+  const waMeUrl = `https://wa.me/?text=${encodedText}`;
+
+  const link = document.createElement('a');
+  link.href = whatsappScheme;
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  setTimeout(() => {
+    if (document.hidden || !window.location.href.startsWith('https://api.whatsapp.com')) {
+      window.location.href = apiUrl;
+      setTimeout(() => {
+        if (!document.hidden) {
+          window.location.href = waMeUrl;
+        }
+      }, 1200);
     }
-  }, 1200);
+  }, 1000);
 }
 function buildOrderText(){
   const table=(document.getElementById('tableNo').value||'').trim()||'-';
@@ -636,7 +642,7 @@ function buildOrderText(){
   return lines.join('\n');
 }
 function submitOrderToWhatsApp(){
-  if(!CART.length){ alert('请先加入商品'); return; }
+  if(!CART.length){ return; }
   const sum=CART.reduce((s,it)=>s+it.qty*it.price,0);
   bumpKPI(sum);
   const orderObj = {
@@ -688,7 +694,7 @@ document.getElementById('statsBtn').onclick = ()=> {
 };
 document.getElementById('calcBtn').onclick = ()=>{
   const d = document.getElementById('statDate').value;
-  if(!d){ alert('请选择日期'); return; }
+  if(!d){ return; }
   const stat = calcStatsByDate(d);
   const text = renderStatsAndBuildWA(d, stat);
   openWA(text);
