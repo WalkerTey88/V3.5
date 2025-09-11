@@ -705,57 +705,102 @@
             const grid = wrap.querySelector('.grid');
 
             if (cat.key === 'cat_drinks') {
+                
                 const all = cat.sections.flatMap(s => s.items);
-                const groups = groupDrinks(all);
-                Object.keys(groups).forEach(base => {
-                    const hot = groups[base].hot;
-                    const ice = groups[base].ice;
-                    const hotId = `${base}（热）__${hot ? hot.price : ''}`;
-                    const iceId = `${base}（冰）__${ice ? ice.price : ''}`;
-                    NAME_TO_CAT.set(`${base}（热）`, 'cat_drinks');
-                    NAME_TO_CAT.set(`${base}（冰）`, 'cat_drinks');
-                    grid.insertAdjacentHTML('beforeend', `
-                        <div class="item">
-                            <h4>${base}</h4>
-                            <div class="extra" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                                <div>
-                                    <label><input type="checkbox" data-drinkchk="${hotId}"> 热</label>
-                                    <div class="price">RM ${hot ? Number(hot.price).toFixed(2) : '—'}</div>
-                                    <div class="act">
-                                        <button class="btn ghost" data-sub="${hotId}">${t('minus')}</button>
-                                        <div class="qty" data-qty="${hotId}">0</div>
-                                        <button class="btn" data-add="${hotId}">${t('add')}</button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label><input type="checkbox" data-drinkchk="${iceId}"> 冰</label>
-                                    <div class="price">RM ${ice ? Number(ice.price).toFixed(2) : '—'}</div>
-                                    <div class="act">
-                                        <button class="btn ghost" data-sub="${iceId}">${t('minus')}</button>
-                                        <div class="qty" data-qty="${iceId}">0</div>
-                                        <button class="btn" data-add="${iceId}">${t('add')}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `);
+
+                // 解析饮料命名：基名 + 变体(C/O/咸C/默认) + 温度(热/冰)
+                function parseDrinkName(n) {
+                    const m = n.match(/^([\u4e00-\u9fa5A-Za-z ]+?)(?:\s?(C|O|咸C))?（(热|冰)）$/);
+                    if (!m) return null;
+                    const base = m[1].trim();
+                    const variant = m[2] || '默认';
+                    const temp = m[3];
+                    return { base, variant, temp };
+                }
+
+                // groups[base][variant] = {hot, ice}
+                const groups = {};
+                all.forEach(it => {
+                    const p = parseDrinkName(it.name);
+                    if (!p) return;
+                    groups[p.base] = groups[p.base] || {};
+                    groups[p.base][p.variant] = groups[p.base][p.variant] || { hot: null, ice: null };
+                    if (p.temp === '热') groups[p.base][p.variant].hot = { price: it.price, full: `${p.base}${p.variant==='默认'?'':' '+p.variant}（热）` };
+                    if (p.temp === '冰') groups[p.base][p.variant].ice = { price: it.price, full: `${p.base}${p.variant==='默认'?'':' '+p.variant}（冰）` };
                 });
+
+                // 渲染基名（默认收起）→ 变体 → 热/冰
+                Object.keys(groups).forEach(base => {
+                    const variants = groups[base];
+                    const variantKeys = Object.keys(variants).sort((a,b)=>{
+                        const order = { '默认':0, 'C':1, 'O':2, '咸C':3 };
+                        return (order[a] ?? 9) - (order[b] ?? 9);
+                    });
+                    const baseId = `base-${base.replace(/\s+/g,'_')}`;
+                    const baseCard = document.createElement('div');
+                    baseCard.className = 'item';
+                    baseCard.innerHTML = `
+                      <h4 data-base-toggle="${baseId}" style="cursor:pointer">${base}</h4>
+                      <div class="base-body" id="${baseId}" style="display:none; margin-top:8px; gap:10px"></div>
+                    `;
+                    grid.appendChild(baseCard);
+                    const baseBody = baseCard.querySelector('.base-body');
+
+                    variantKeys.forEach(variant => {
+                        const node = variants[variant];
+                        const title = (variant==='默认') ? base : `${base} ${variant}`;
+                        const hot = node.hot, ice = node.ice;
+                        const hotId = hot ? `${hot.full}__${hot.price}` : '';
+                        const iceId = ice ? `${ice.full}__${ice.price}` : '';
+                        if (hot) NAME_TO_CAT.set(hot.full, 'cat_drinks');
+                        if (ice) NAME_TO_CAT.set(ice.full, 'cat_drinks');
+
+                        baseBody.insertAdjacentHTML('beforeend', `
+                          <div class="card" style="border:1px dashed var(--line); border-radius:12px; padding:10px">
+                            <div style="font-weight:800; opacity:.95; margin-bottom:6px">${title}</div>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+                              <div>
+                                <div style="font-weight:800;opacity:.9">热</div>
+                                <div class="price">RM ${hot ? Number(hot.price).toFixed(2) : '—'}</div>
+                                <div class="act">
+                                  <button class="btn ghost" ${hot ? `data-sub="${hotId}"` : 'disabled'}>${t('minus')}</button>
+                                  <div class="qty" data-qty="${hotId}">0</div>
+                                  <button class="btn" ${hot ? `data-add="${hotId}"` : 'disabled'}>${t('add')}</button>
+                                </div>
+                              </div>
+                              <div>
+                                <div style="font-weight:800;opacity:.9">冰</div>
+                                <div class="price">RM ${ice ? Number(ice.price).toFixed(2) : '—'}</div>
+                                <div class="act">
+                                  <button class="btn ghost" ${ice ? `data-sub="${iceId}"` : 'disabled'}>${t('minus')}</button>
+                                  <div class="qty" data-qty="${iceId}">0</div>
+                                  <button class="btn" ${ice ? `data-add="${iceId}"` : 'disabled'}>${t('add')}</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        `);
+                    });
+                });
+
+                // 非热/冰类（如 罐装水、茶包）保持平铺
                 all.forEach(it => {
                     if (/（热）|（冰）/.test(it.name)) return;
                     NAME_TO_CAT.set(it.name, 'cat_drinks');
                     const id = `${it.name}__${it.price}`;
                     grid.insertAdjacentHTML('beforeend', `
-                        <div class="item">
-                            <h4>${it.name}</h4>
-                            <div class="price">RM ${Number(it.price).toFixed(2)}</div>
-                            <div class="act">
-                                <button class="btn ghost" data-sub='${id}'>${t('minus')}</button>
-                                <div class="qty" data-qty='${id}'>0</div>
-                                <button class="btn" data-add='${id}'>${t('add')}</button>
-                            </div>
-                        </div>`);
+                      <div class="item">
+                        <h4>${it.name}</h4>
+                        <div class="price">RM ${Number(it.price).toFixed(2)}</div>
+                        <div class="act">
+                          <button class="btn ghost" data-sub='${id}'>${t('minus')}</button>
+                          <div class="qty" data-qty='${id}'>0</div>
+                          <button class="btn" data-add='${id}'>${t('add')}</button>
+                        </div>
+                      </div>
+                    `);
                 });
-            } else {
+} else {
                 cat.sections.forEach(sec => {
                     sec.items.forEach(it => {
                         NAME_TO_CAT.set(it.name, cat.key);
@@ -782,7 +827,17 @@
             const h = e.target.closest('[data-toggle]');
             if (h) { const b = h.parentElement.querySelector('.cat-b'); b.classList.toggle('open'); }
         });
-        document.addEventListener('DOMContentLoaded', () => {
+        
+        // 二级折叠：饮料内的“基名”（Milo/奶茶/咖啡…）点击展开/收起（默认收起）
+        catsEl.addEventListener('click', (e) => {
+            const h = e.target.closest('[data-base-toggle]');
+            if (!h) return;
+            const id = h.getAttribute('data-base-toggle');
+            const body = document.getElementById(id);
+            if (!body) return;
+            body.style.display = (body.style.display === 'none' || !body.style.display) ? 'block' : 'none';
+        });
+document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.cat-b').forEach(b => b.classList.remove('open'));
         });
 
