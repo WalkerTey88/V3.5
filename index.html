@@ -1,20 +1,188 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>老虎机游戏 🎰</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LYX Finance Partners – 您的最佳财务伙伴</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-<body>
-  <div id="game-container">
-    <h1>🎰 幸运老虎机</h1>
-    <div id="reels-container"></div>
-    <button id="spin-btn">旋转</button>
-    <div id="message"></div>
-  </div>
 
-  <audio id="bg-music" src="assets/bg-loop.mp3" loop></audio>
-  <script src="game.js"></script>
+<body>
+    <header>
+        <div class="lang-switcher">
+            <button type="button" class="lang-btn active" lang="zh">中文</button>
+            <button type="button" class="lang-btn" lang="en">EN</button>
+            <button type="button" class="lang-btn" lang="ms">BM</button>
+        </div>
+
+        <nav>
+            <a href="#home" data-lang-key="navHome">首页</a>
+            <a href="#about" data-lang-key="navAbout">关于我们</a>
+            <a href="#services" data-lang-key="navServices">服务</a>
+            <a href="#why-us" data-lang-key="navWhyUs">为什么选择我们</a>
+            <a href="#apply" data-lang-key="navApply">申请</a>
+            <a href="#contact" data-lang-key="navContact">联系</a>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- HERO -->
+        <section id="home" class="hero">
+            <h2 data-lang-key="heroTitle">今天申请，今天通过!</h2>
+            <p data-lang-key="heroSubtitle1">快速 & 许可</p>
+            <p data-lang-key="heroSubtitle2">LYX Finance Partners 提供安全、许可的个人贷款。现在申请，只需 2 小时即可获得 5,000 – 100,000 元的贷款！</p>
+            
+            <a href="https://wa.me/601136611410" target="_blank" class="btn" data-lang-key="heroButton">立即申请 (可线上或线下)</a>
+        </section>
+
+        <!-- 关于我们 -->
+        <section id="about" class="animate-on-scroll slide-in-up">
+            <h2 data-lang-key="aboutTitle">关于 LYX Finance Partners – 建立信任的基石</h2>
+            <p data-lang-key="aboutIntro">
+                我们不仅仅是贷款提供者，更是您值得信赖的财务伙伴。我们致力于提供透明、可靠且以客户为中心的服务，帮助您实现财务目标。
+            </p>
+
+            <img loading="lazy" src="https://i.ibb.co/hxqw7r9V/1760815560897.png" class="section-image">
+
+            <div class="about-container">
+
+                <div class="about-card card-base animate-on-scroll slide-in-up">
+                    <i class="fa-solid fa-landmark"></i>
+                    <h3 data-lang-key="aboutCard1Title">公司历史与承诺</h3>
+                    <p data-lang-key="aboutCard1Text1">
+                        <strong>2001年开创</strong>，LYX Finance Partners 拥有超过二十年的行业经验。我们见证了市场的变迁，始终坚守诚信和专业的原则。
+                    </p>
+                    <p data-lang-key="aboutCard1Text2">
+                        我们的使命是为客户提供最合适的财务解决方案，无论市场环境如何，我们都是您坚实的后盾。
+                    </p>
+                </div>
+
+                <div class="about-card card-base animate-on-scroll slide-in-up">
+                    <i class="fa-solid fa-trophy"></i>
+                    <h3 data-lang-key="aboutCard2Title">信心保证与成功案例</h3>
+                    <p data-lang-key="aboutCard2Text1">我们成功的基石源于客户的信任。我们已帮助数以千计的客户渡过财务难关，实现目标。</p>
+                    <ul>
+                        <li data-lang-key="aboutCard2Li1"><strong>98%</strong> 客户满意度</li>
+                        <li data-lang-key="aboutCard2Li2"><strong>快速审批</strong> 最快 2 小时放款</li>
+                        <li data-lang-key="aboutCard2Li3"><strong>透明条款</strong> 无隐藏费用</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 服务 -->
+        <section id="services" class="animate-on-scroll slide-in-up">
+            <h2 data-lang-key="servicesTitle">我们的贷款服务</h2>
+            <div class="services">
+
+                <div class="service card-base animate-on-scroll slide-in-up">
+                    <img loading="lazy" src="https://i.ibb.co/G4B8qtby/retouch-2025101903125682.jpg" class="service-image">
+                    <h3 data-lang-key="service1Title">个人贷款</h3>
+                    <p data-lang-key="service1Desc">快速现金、低利率。</p>
+                </div>
+
+                <div class="service card-base animate-on-scroll slide-in-up">
+                    <img loading="lazy" src="https://i.ibb.co/XfFFSZyc/1760815375775.png" class="service-image">
+                    <h3 data-lang-key="service2Title">商业贷款</h3>
+                    <p data-lang-key="service2Desc">企业资金周转、业务扩展解决方案。</p>
+                </div>
+
+                <div class="service card-base animate-on-scroll slide-in-up">
+                    <img loading="lazy" src="https://i.ibb.co/ztN5nzc/retouch-2025101903154314.jpg" class="service-image">
+                    <h3 data-lang-key="service3Title">紧急贷款</h3>
+                    <p data-lang-key="service3Desc">紧急费用快速解决。</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- WHY US -->
+        <section id="why-us" class="animate-on-scroll slide-in-up">
+            <h2 data-lang-key="whyUsTitle">为什么选择我们？</h2>
+            <p style="text-align:center" data-lang-key="whyUsIntro">
+                无论你的情况有多糟，我们都愿意向你伸出援手。
+            </p>
+
+            <div class="why-choose">
+                <div class="feature card-base">
+                    <i class="fa-solid fa-percent"></i>
+                    <h3 data-lang-key="feature1Title">最低利率</h3>
+                </div>
+
+                <div class="feature card-base">
+                    <i class="fa-solid fa-sliders"></i>
+                    <h3 data-lang-key="feature2Title">灵活还款</h3>
+                </div>
+
+                <div class="feature card-base">
+                    <i class="fa-solid fa-rocket"></i>
+                    <h3 data-lang-key="feature3Title">快速申请</h3>
+                </div>
+
+                <div class="feature card-base">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <h3 data-lang-key="feature4Title">专业经验</h3>
+                </div>
+
+                <div class="feature card-base">
+                    <i class="fa-solid fa-clock"></i>
+                    <h3 data-lang-key="feature5Title">24 小时申请</h3>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- APPLY -->
+        <section id="apply">
+            <h2 data-lang-key="applyTitle">如何申请？</h2>
+
+            <div class="steps">
+                <div class="step card-base">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <h3 data-lang-key="step1Title">步骤 1</h3>
+                </div>
+
+                <div class="step card-base">
+                    <i class="fa-solid fa-comments-dollar"></i>
+                    <h3 data-lang-key="step2Title">步骤 2</h3>
+                </div>
+
+                <div class="step card-base">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <h3 data-lang-key="step3Title">步骤 3</h3>
+                </div>
+            </div>
+
+            <!-- 联系按钮 -->
+            <div class="form-container">
+                <h2 data-lang-key="formTitle">贷款申请表</h2>
+
+                <a href="https://wa.me/601136611410" class="btn" target="_blank">通过 WhatsApp 提交申请</a>
+            </div>
+
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="animate-on-scroll slide-in-up">
+            <h2 data-lang-key="contactTitle">与我们取得联系</h2>
+
+            <img loading="lazy" src="https://i.ibb.co/rKptCKc7/1760815743964.png" class="section-image">
+
+            <a href="https://wa.me/601136611410" target="_blank" class="btn" data-lang-key="contactButton">立即申请</a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p data-lang-key="footerRights">&copy; 2025 LYX Finance Partners. All rights reserved.</p>
+        <div class="footer-legal">
+            License No: WL7835/14/01-2/030529<br>
+            SSM: 200103179192 (JR0176656-H)
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
 </body>
 </html>
